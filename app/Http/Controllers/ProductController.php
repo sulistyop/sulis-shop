@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cart;
+use App\Category;
 use App\Product;
 use Carbon\Carbon;
 use GuzzleHttp\Promise\Create;
@@ -32,7 +33,7 @@ class ProductController extends Controller
     public function index()
     {
         $product = Product::paginate(5);
-        return view('products.index' , compact('product'));
+        return view('admin.products.product' , compact('product'));
     }
  
     /**
@@ -42,29 +43,10 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $category = Category::all();
+        return view('admin.products.create',compact('category'));
     }
 
-
-
-
-    public function inputCart(Request $request){
-        $priceProduct = Product::find($request->id_product);
-        $sum  = $request->sum_price;
-        $jumlah = $request->jumlah;
-        $result = $sum * $jumlah;
-        $user_id = Auth::user()->id;
-  
-        Cart::create([
-           'user_id' => $user_id,
-            'warna' => $request->warna,
-            'jumlah' => $request->jumlah,
-            'sum_price' => $result,
-            'product_id' => $request->id_product,
-        ]);
-  
-        return  redirect('/cart')->with('status','Masuk Keranjang');
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -99,17 +81,22 @@ class ProductController extends Controller
                     $validated = $request->validate([
                         'p_name' => 'required|string|max:40',
                         'price' => 'required',
+                        'category' => 'required',
+                        'stock' => 'required',
                         'image' => 'required|mimes:jpeg,png|max:1014',
                     ]);
                     $extension = $request->image->extension();
-                    $request->image->storeAs('/public', $validated['p_name'].".".$extension);
-                    $url = Storage::url($validated['p_name'].".".$extension);
+             
+                    $request->image->storeAs('/public/products', $validated['p_name'].Auth::user()->id.".".$extension);
+                    $url = Storage::url("products/".$validated['p_name'].Auth::user()->id.".".$extension);
                     Product::create([
                        'p_name' => $validated['p_name'],
                         'url' => $url,
                         'price' => $request->price,
                         'desc' => $request->desc,
                         'upload_by'=>$user_id,
+                        'category'=>$request->category,
+                        'stock'=>$request->stock,
                     ]);
                     return redirect('/products')->with('status','Data Product Berhasil Di input');
                 }
@@ -124,8 +111,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
-        return view('products.show',compact('product'));
+        return view('admin.products.show',compact('product'));
     }
     
 
@@ -139,7 +125,7 @@ class ProductController extends Controller
     {
         //
         
-        return view('products.edit',compact('product'));
+        return view('admin.products.edit',compact('product'));
     }
 
     /**
@@ -162,8 +148,9 @@ class ProductController extends Controller
                 'image' => 'required|mimes:jpeg,png|max:1014',
             ]);
             $extension = $request->image->extension();
-            $request->image->storeAs('/public', $validated['p_name'].".".$extension);
-            $url = Storage::url($validated['p_name'].".".$extension);
+            $date = Carbon::now();
+            $request->image->storeAs('/public/products', $validated['p_name'].Auth::user()->id.".".$extension);
+            $url = Storage::url("products/".$validated['p_name'].Auth::user()->id.".".$extension);
 
             Product::where('id',$product->id)->update([
                 'p_name' => $validated['p_name'],
@@ -202,7 +189,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::destroy($id);
+        Product::destroy($id);
         return redirect('/products')->with('status','Delete Succes');
         
     }

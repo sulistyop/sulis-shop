@@ -23,6 +23,19 @@
         </div>
     </div> --}}
 
+<div class="row">
+    <div class="col-md-4">
+        <label for=""></label>
+        <select name="" id="filter-1" class="form-control">
+            <option value="">Pilih Kategori</option>
+            @foreach($categori as $key => $kat)
+                <option value="{{$kat->id}}">{{ $kat->name}}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+      
+
 
 
     <div class="row row-cols-2 row-cols-md-5 m-1">
@@ -42,5 +55,10 @@
             </div>
         @endforeach
     </div>
-
+    <!-- Start of HubSpot Embed Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8885685.js"></script>
+<!-- End of HubSpot Embed Code -->
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8885685.js"></script>
+<!-- End of HubSpot Embed Code -->
 @endsection

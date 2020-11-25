@@ -72,7 +72,11 @@
           
             <td>Rp. {{ number_format("$keranjangs->sum_price",2)}}</td>
             <td>
-            <a href="/cart/{{$keranjangs->id}}"class="btn btn-outline-danger"><i class="fas fa-trash-alt"> Hapus</i></a>
+            <form action="/cart/{{$keranjangs->id}}" method="post" class="d-inline">
+              @csrf
+              @method('delete')
+              <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash-alt"> Hapus</i></button>
+            </form>
             <a href="/products/{{$keranjangs->product_id}}" class="btn btn-outline-dark m-1" ><i class="fas fa-search"> Lihat</i></a>              
             </td>
           </tr>
@@ -83,7 +87,7 @@
         <nav aria-label="breadcrumb" class="d-flex bg-light justify-content-end cstm" >
             <div class="form-inline" aria-expanded="false">
                 {{-- <button class="btn btn-dark my-2 my-sm-0 m-2" type="submit">Back</button> --}}
-                <form method="post" action="" style="">
+                <form method="post" action="/checkout" style="">
                     @csrf
                     <div class="input-group">
                         

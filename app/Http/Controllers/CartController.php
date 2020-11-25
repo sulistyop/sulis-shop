@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cart;
+use App\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use SweetAlert;
@@ -70,9 +71,26 @@ class CartController extends Controller
     public function store(Request $request)
     {
         //
+        $priceProduct = Product::find($request->id_product);
+        $sum  = $request->sum_price;
+        $jumlah = $request->jumlah;
+        $result = $sum * $jumlah;
+        $user_id = Auth::user()->id;
+  
+        Cart::create([
+           'user_id' => $user_id,
+            'warna' => $request->warna,
+            'jumlah' => $request->jumlah,
+            'sum_price' => $result,
+            'product_id' => $request->id_product,
+        ]);
+  
+        return  redirect('/cart')->with('status','Masuk Keranjang');
        
     }
-
+    public function tes(){
+        return view('layouts.admin');
+    }
     /**
      * Display the specified resource.
      *

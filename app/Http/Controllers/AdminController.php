@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Cart;
+use App\Category;
+use App\Pesanan;
+use App\Product;
+use App\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -14,10 +17,13 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
-        return view('admin.admin');
+        $pesanan = Pesanan::all()->count();
+        $user = User::all()->count();
+        $product = Product::all()->count();
+        $category = Category::all()->count();
+        return view('admin.products.dashboard',compact('pesanan','user','category','product'));
+        // return $category;
     }
-
 
     /**
      * Show the form for creating a new resource.
